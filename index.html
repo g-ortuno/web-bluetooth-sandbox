@@ -55,6 +55,18 @@ function readValue() {
   window.char.readValue().then(val => console.log('Value!'));
 }
 
+function multipleReadValue() {
+  navigator.bluetooth.requestDevice({filters: [{services: ['heart_rate']}]
+  }).then(d => d.connectGATT())
+    .then(g => g.getPrimaryService('heart_rate'))
+    .then(s => g.getCharacteristic('body_sensor_location'))
+    .then(c => {
+      c.readValue();
+      c.readValue();
+      c.readValue();
+    });
+}
+
 function emptyFilter() {
   navigator.bluetooth.requestDevice({filters: [{namePrefix: ''}]});
 }
@@ -74,3 +86,4 @@ function GetHeartRateDeviceServices() {
 <button onclick="emptyFilter()">Scan with Empty Filter</button>
 <button onclick="GetHeartRateDevice()">Get Heart Rate Device</button>
 <button onclick="GetHeartRateDeviceServices()">Get Heart Rate Services</button>
+<button onclick="multipleReadValue()">Read x 4</button>
