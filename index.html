@@ -59,7 +59,7 @@ function multipleReadValue() {
   navigator.bluetooth.requestDevice({filters: [{services: ['heart_rate']}]
   }).then(d => d.connectGATT())
     .then(g => g.getPrimaryService('heart_rate'))
-    .then(s => g.getCharacteristic('body_sensor_location'))
+    .then(s => s.getCharacteristic('body_sensor_location'))
     .then(c => {
       c.readValue();
       c.readValue();
