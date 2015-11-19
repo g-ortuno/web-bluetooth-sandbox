@@ -1,0 +1,76 @@
+<script>
+function GetHeartRateMeasurement() {
+  return GetHeartRateService()
+    .then(service => {
+      console.log(service);
+      console.log("Getting Characteristic...");
+      return service.getCharacteristic('heart_rate_measurement')
+    });
+}
+
+function GetBodySensor() {
+  return GetHeartRateService()
+    .then(service => {
+      console.log(service);
+      console.log("Getting Characteristic...");
+      return service.getCharacteristic('body_sensor_location')
+    });
+}
+
+function GetHeartRateDevice() {
+  console.log("Requesting...");
+  return navigator.bluetooth.requestDevice({filters: [{services: ['heart_rate']}]
+  }).then(device => {
+    console.log(device);
+    console.log(device.instanceID);
+    console.log(device.id);
+    return device;
+  });
+}
+
+function GetHeartRateService() {
+  return GetHeartRateDevice().then(device => {
+    console.log("Connecting...");
+    return device.connectGATT();
+  }).then(server => {
+    console.log(server);
+    console.log("Getting Services...");
+    return server.getPrimaryService('heart_rate');
+  });
+}
+
+function Setup() {
+  return GetBodySensor()
+    .then(characteristic => {
+      characteristic.addEventListener('characteristicvaluechanged', () => console.log('Event!'));
+      console.log("Reading value...");
+      window.char = characteristic;
+      return characteristic.readValue();
+    }).then(value => {
+      console.log("Value!");
+    });
+};
+
+function readValue() {
+  window.char.readValue().then(val => console.log('Value!'));
+}
+
+function emptyFilter() {
+  navigator.bluetooth.requestDevice({filters: [{namePrefix: ''}]});
+}
+
+function GetHeartRateDeviceServices() {
+  return GetHeartRateDevice().then(d => d.connectGATT())
+    .then(g => g.getPrimaryServices())
+    .then(services => {
+      for (var service of services) {
+        console.log(service);
+      }
+    });
+}
+</script>
+<button onclick="Setup()">Setup</button>
+<button onclick="readValue()">Read</button>
+<button onclick="emptyFilter()">Scan with Empty Filter</button>
+<button onclick="GetHeartRateDevice()">Get Heart Rate Device</button>
+<button onclick="GetHeartRateDeviceServices()">Get Heart Rate Services</button>
