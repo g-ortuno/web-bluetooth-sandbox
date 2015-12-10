@@ -1,4 +1,5 @@
 <script>
+var global_device;
 function GetHeartRateMeasurement() {
   return GetHeartRateService()
     .then(service => {
@@ -22,7 +23,6 @@ function GetHeartRateDevice() {
   return navigator.bluetooth.requestDevice({filters: [{services: ['heart_rate']}]
   }).then(device => {
     console.log(device);
-    console.log(device.instanceID);
     console.log(device.id);
     return device;
   });
@@ -80,6 +80,17 @@ function GetHeartRateDeviceServices() {
       }
     });
 }
+
+function GetHeartRateDeviceGlobal() {
+  console.log("Getting device");
+  return GetHeartRateDevice().then(d => {
+    console.log("got device: " + d.id);
+    global_device = d;
+  });
+}
+function ConnectToGlobalDevice() {
+  return global_device.connectGATT().then(() => console.log("connected"))
+}
 </script>
 <button onclick="Setup()">Setup</button>
 <button onclick="readValue()">Read</button>
@@ -87,3 +98,5 @@ function GetHeartRateDeviceServices() {
 <button onclick="GetHeartRateDevice()">Get Heart Rate Device</button>
 <button onclick="GetHeartRateDeviceServices()">Get Heart Rate Services</button>
 <button onclick="multipleReadValue()">Read x 4</button>
+<button onclick="GetHeartRateDeviceGlobal()">Global get</button>
+<button onclick="ConnectToGlobalDevice()">Connect to global</button>
