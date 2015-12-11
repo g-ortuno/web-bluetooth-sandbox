@@ -1,5 +1,6 @@
 <script>
 var global_device;
+var global_server;
 function GetHeartRateMeasurement() {
   return GetHeartRateService()
     .then(service => {
@@ -89,7 +90,25 @@ function GetHeartRateDeviceGlobal() {
   });
 }
 function ConnectToGlobalDevice() {
-  return global_device.connectGATT().then(() => console.log("connected"))
+  console.log("Connecting");
+  return global_device.connectGATT().then(g => {
+    global_server = g;
+    console.log("Connected");
+  })
+}
+function GlobalRead() {
+  console.log("Reading");
+  return global_server.getPrimaryService('heart_rate')
+    .then(s => s.getCharacteristic('body_sensor_location'))
+    .then(c => c.readValue())
+    .then(v => console.log(v));
+}
+function GlobalWrite() {
+  console.log("Writting");
+  return global_server.getPrimaryService('heart_rate')
+    .then(s => s.getCharacteristic('heart_rate_control_point'))
+    .then(c => c.writeValue(new ArrayBuffer([1])))
+    .then(() => console.log('yay'));
 }
 </script>
 <button onclick="Setup()">Setup</button>
