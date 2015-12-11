@@ -96,18 +96,33 @@ function ConnectToGlobalDevice() {
     console.log("Connected");
   })
 }
+
 function GlobalRead() {
   console.log("Reading");
+  console.log('\t Getting service.');
   return global_server.getPrimaryService('heart_rate')
-    .then(s => s.getCharacteristic('body_sensor_location'))
-    .then(c => c.readValue())
+    .then(s => {
+      console.log('\t Getting characteristic');
+      return s.getCharacteristic('body_sensor_location');
+    })
+    .then(c => {
+      console.log('\t Reading value');
+      return c.readValue();
+    })
     .then(v => console.log(v));
 }
 function GlobalWrite() {
   console.log("Writting");
+  console.log('\t Getting service.');
   return global_server.getPrimaryService('heart_rate')
-    .then(s => s.getCharacteristic('heart_rate_control_point'))
-    .then(c => c.writeValue(new ArrayBuffer([1])))
+    .then(s => {
+      console.log('\t Getting characteristic.');
+      return s.getCharacteristic('heart_rate_control_point')
+    })
+    .then(c => {
+      console.log('\t Writting value');
+      return c.writeValue(new ArrayBuffer([1]))
+    })
     .then(() => console.log('yay'));
 }
 </script>
