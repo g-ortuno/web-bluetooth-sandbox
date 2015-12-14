@@ -97,6 +97,11 @@ function ConnectToGlobalDevice() {
   })
 }
 
+function GlobalDisconnect() {
+  global_server.disconnect();
+  console.log('disconnected');
+}
+
 function GlobalRead() {
   console.log("Reading");
   console.log('\t Getting service.');
