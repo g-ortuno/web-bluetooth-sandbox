@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="api-experiments" content="WOSXqRPQy0p0wqg280IqRFJnsbBvZZh+G7e4JiVfG9/LyBQAqMoLrIFB96VDk7WLQpXQUqaBBg/V8v5wy6hKCQ==|https://g-ortuno.github.io|WebBluetooth|1458151765000"
 <style>
 </style>
 </head>
@@ -95,6 +96,15 @@ function GetHeartRateDeviceGlobal() {
     global_device = d;
   });
 }
+function ConnectToGlobalDeviceTwice() {
+  console.log("Connecting");
+  return Promise.all([global_device.connectGATT().then(g => {
+    global_server = g;
+    console.log("Connected");
+  }), global_device.connectGATT().then(() => console.log('connected again'))]);
+}
+
+
 function ConnectToGlobalDevice() {
   console.log("Connecting");
   return global_device.connectGATT().then(g => {
@@ -136,6 +146,30 @@ function GlobalWrite() {
     })
     .then(() => console.log('yay'));
 }
+function TestGC() {
+  return navigator.bluetooth.requestDevice({filters: [{services: ['heart_rate']}]})
+    .then(d => d.connectGATT())
+    .then(() => console.log("Connected"));
+};
+function DisconnectConnect() {
+  GlobalDisconnect();
+  console.log('disconnected');
+  return ConnectToGlobalDevice();
+};
+function ReadDisconnect() {
+  return global_server.getPrimaryService('heart_rate')
+    .then(s => {
+      console.log('\t Getting characteristic');
+      return s.getCharacteristic('body_sensor_location');
+    })
+    .then(c => {
+      console.log('\t Reading value');
+      let read_promise = c.readValue();
+      GlobalDisconnect();
+      return read_promise;
+    })
+    .then(v => console.log(v));
+}
 </script>
 <button onclick="Setup()">Setup</button>
 <button onclick="readValue()">Read</button>
@@ -148,3 +182,6 @@ function GlobalWrite() {
 <button onclick="GlobalDisconnect()">Global disconnect</button>
 <button onclick="GlobalRead()">Global read</button>
 <button onclick="GlobalWrite()">Global write</button>
+<button onclick="TestGC()">Test GC</button>
+<button onclick="DisconnectConnect()">Disconnect Connect</button>
+<button onclick="ReadDisconnect()">Read Disconnect</button>
