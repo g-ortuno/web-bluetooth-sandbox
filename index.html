@@ -170,18 +170,30 @@ function ReadDisconnect() {
     })
     .then(v => console.log(v));
 }
+function CheckIfBluetoothEnabled() {
+  if (typeof navigator.bluetooth === 'undefined') {
+    alert("Bluetooth not enabled");
+  } else {
+    alert("Bluetooth enabled");
+  }
+}
 </script>
-<button onclick="Setup()">Setup</button>
-<button onclick="readValue()">Read</button>
-<button onclick="emptyFilter()">Scan with Empty Filter</button>
-<button onclick="GetHeartRateDevice()">Get Heart Rate Device</button>
-<button onclick="GetHeartRateDeviceServices()">Get Heart Rate Services</button>
-<button onclick="multipleReadValue()">Read x 4</button>
-<button onclick="GetHeartRateDeviceGlobal()">Global get</button>
-<button onclick="ConnectToGlobalDevice()">Connect to global</button>
-<button onclick="GlobalDisconnect()">Global disconnect</button>
-<button onclick="GlobalRead()">Global read</button>
-<button onclick="GlobalWrite()">Global write</button>
-<button onclick="TestGC()">Test GC</button>
-<button onclick="DisconnectConnect()">Disconnect Connect</button>
-<button onclick="ReadDisconnect()">Read Disconnect</button>
+<div style="margin-bottom: 20px;">
+  <button onclick="CheckIfBluetoothEnabled()">Check If Bluetooth Enabled</button>
+</div>
+<div>
+  <button onclick="Setup()">Setup</button>
+  <button onclick="readValue()">Read</button>
+  <button onclick="emptyFilter()">Scan with Empty Filter</button>
+  <button onclick="GetHeartRateDevice()">Get Heart Rate Device</button>
+  <button onclick="GetHeartRateDeviceServices()">Get Heart Rate Services</button>
+  <button onclick="multipleReadValue()">Read x 4</button>
+  <button onclick="GetHeartRateDeviceGlobal()">Global get</button>
+  <button onclick="ConnectToGlobalDevice()">Connect to global</button>
+  <button onclick="GlobalDisconnect()">Global disconnect</button>
+  <button onclick="GlobalRead()">Global read</button>
+  <button onclick="GlobalWrite()">Global write</button>
+  <button onclick="TestGC()">Test GC</button>
+  <button onclick="DisconnectConnect()">Disconnect Connect</button>
+  <button onclick="ReadDisconnect()">Read Disconnect</button>
+</div>
