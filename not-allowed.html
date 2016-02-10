@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+  <table>
+    <tr>
+      <td>Web Bluetooth bindings</td>
+      <td id="bindings"></td>
+    </tr>
+    <tr>
+      <td>Access Web Bluetooth bindings</td>
+      <td id="access-bindings"></td>
+    </tr>
+    <tr>
+      <td>Use Web Bluetooth</td>
+      <td id="use-bluetooth"></td>
+    </tr>
+  </table>
+  <button id="run-tests">Run Test</button>
+  <script>
+  (() => {
+    'use strict';
+    function runBindingsTest() {
+      let result = document.querySelector('#bindings');
+      if ('bluetooth' in navigator) {
+        result.appendChild(document.createTextNode('Present'));
+      } else {
+        result.appendChild(document.createTextNode('Not Present'));
+      }
+    }
+
+    function runAccessBindgingsTest() {
+      let result = document.querySelector('#access-bindings');
+      if (typeof navigator.bluetooth === 'undefined') {
+        result.appendChild(document.createTextNode('Undefined'));
+      } else {
+        result.appendChild(document.createTextNode(typeof navigator.bluetooth));
+      }
+    }
+
+    function runWebBluetoothTest() {
+      let result = document.querySelector('#use-bluetooth');
+      if (typeof navigator.bluetooth === 'undefined') {
+        result.appendChild(document.createTextNode('Undefined'));
+        return;
+      }
+      navigator.bluetooth.requestDevice()
+        .catch(e => {
+          if (e.message === '') {
+            console.log(e);
+            result.appendChild(document.createTextNode('Bluetooth Blocked'));
+          } else {
+            console.log(e);
+            result.appendChild(document.createTextNode('Bluetooth works'));
+          }
+        });
+    }
+    function runTests() {
+      runBindingsTest();
+      runAccessBindgingsTest();
+      runWebBluetoothTest();
+    }
+    let test_button = document.querySelector('#run-tests');
+    test_button.addEventListener('click', runTests);
+  })();
+  </script>
+</body>
