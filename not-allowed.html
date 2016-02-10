@@ -55,7 +55,7 @@
             setResult(result, 'Bluetooth Works');
             return;
           }
-          setResult(result, 'Unknown Error');
+          setResult(result, 'Unknown Error' + e.message);
         });
     }
     function runTests() {
