@@ -22,47 +22,49 @@
   <script>
   (() => {
     'use strict';
+    const BLUETOOTH_BLOCKED = 'Web Bluetooth is not enabled on this platform. ' +
+                              'To find out how to enable it and the current ' +
+                              'implementation status visit ' +
+                              'https://goo.gl/HKa2If';
+    const BLUETOOTH_WORKS = '\'filters\' member must be non-empty to find any devices.';
+
+    function setResult(node, result) {
+      if (typeof node.firstChild !== 'undefined') {
+        node.firstChild.data = result;
+        return;
+      }
+      node.appendChild(document.createTextNode(result));
+    }
     function runBindingsTest() {
       let result = document.querySelector('#bindings');
       if ('bluetooth' in navigator) {
-        result.appendChild(document.createTextNode('Present'));
+        setResult(result, 'Present');
       } else {
-        result.appendChild(document.createTextNode('Not Present'));
-      }
-    }
-
-    function runAccessBindgingsTest() {
-      let result = document.querySelector('#access-bindings');
-      if (typeof navigator.bluetooth === 'undefined') {
-        result.appendChild(document.createTextNode('Undefined'));
-      } else {
-        result.appendChild(document.createTextNode(typeof navigator.bluetooth));
+        setResult(result, 'Not Present');
       }
     }
 
     function runWebBluetoothTest() {
       let result = document.querySelector('#use-bluetooth');
       if (typeof navigator.bluetooth === 'undefined') {
-        result.appendChild(document.createTextNode('Undefined'));
+        setResult(result, 'Bluetooth Unavailable');
         return;
       }
       navigator.bluetooth.requestDevice({filters:[]})
         .catch(e => {
-          if (e.message === 'Web Bluetooth is not enabled on this platform. ' +
-                            'To find out how to enable it and the current ' +
-                            'implementation status visit ' +
-                            'https://goo.gl/HKa2If') {
-            console.log(e);
-            result.appendChild(document.createTextNode('Bluetooth Blocked'));
-          } else {
-            console.log(e);
-            result.appendChild(document.createTextNode('Bluetooth works'));
+          if (e.message === BLUETOOTH_BLOCKED) {
+            setResult(result, 'Bluetooth Blocked');
+            return;
           }
+          if (e.message === BLUETOOTH_WORKS) {
+            setResult(result, 'Bluetooth Works');
+            return;
+          }
+          setResult(result, 'Unknown Error');
         });
     }
     function runTests() {
       runBindingsTest();
-      runAccessBindgingsTest();
       runWebBluetoothTest();
     }
     let test_button = document.querySelector('#run-tests');
