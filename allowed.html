@@ -29,7 +29,7 @@
     const BLUETOOTH_WORKS = '\'filters\' member must be non-empty to find any devices.';
 
     function setResult(node, result) {
-      if (typeof node.firstChild !== 'undefined') {
+      if (node.firstChild === null) {
         node.firstChild.data = result;
         return;
       }
