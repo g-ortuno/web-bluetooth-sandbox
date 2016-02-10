@@ -22,7 +22,9 @@
                               'To find out how to enable it and the current ' +
                               'implementation status visit ' +
                               'https://goo.gl/HKa2If';
-    const BLUETOOTH_WORKS = '\'filters\' member must be non-empty to find any devices.';
+    const BLUETOOTH_WORKS = 'Failed to execute \'requestDevice\' on ' +
+                            '\'Bluetooth\': \'filters\' member must be ' +
+                            'non-empty to find any devices.'
 
     function setResult(node, result) {
       if (node.firstChild !== null) {
