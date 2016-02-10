@@ -47,7 +47,10 @@
       }
       navigator.bluetooth.requestDevice({filters:[]})
         .catch(e => {
-          if (e.message === '') {
+          if (e.message === 'Web Bluetooth is not enabled on this platform. ' +
+                            'To find out how to enable it and the current ' +
+                            'implementation status visit ' +
+                            'https://goo.gl/HKa2If') {
             console.log(e);
             result.appendChild(document.createTextNode('Bluetooth Blocked'));
           } else {
