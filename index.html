@@ -132,6 +132,18 @@ function GlobalRead() {
     })
     .then(v => console.log(v));
 }
+
+function GlobalGetCharacteristics() {
+  console.log('GetCharacteristics');
+  console.log('Getting service.');
+  return global_server.getPrimaryService('heart_rate')
+    .then(s => {
+      console.log('\t Getting characteristics');
+      return s.getCharacteristics();
+    })
+    .then(cs => console.log(cs));
+};
+
 function GlobalWrite() {
   console.log("Writting");
   console.log('\t Getting service.');
@@ -142,7 +154,7 @@ function GlobalWrite() {
     })
     .then(c => {
       console.log('\t Writting value');
-      return c.writeValue(new ArrayBuffer([1]))
+      return c.writeValue(new ArrayBuffer([0]))
     })
     .then(() => console.log('yay'));
 }
@@ -191,6 +203,7 @@ function CheckIfBluetoothEnabled() {
   <button onclick="GetHeartRateDeviceGlobal()">Global get</button>
   <button onclick="ConnectToGlobalDevice()">Connect to global</button>
   <button onclick="GlobalDisconnect()">Global disconnect</button>
+  <button onclick="GlobalGetCharacteristics()">Global Get Characteristics</button>
   <button onclick="GlobalRead()">Global read</button>
   <button onclick="GlobalWrite()">Global write</button>
   <button onclick="TestGC()">Test GC</button>
