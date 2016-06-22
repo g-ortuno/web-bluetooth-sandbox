@@ -39,7 +39,7 @@ function GetHeartRateDevice() {
 function GetHeartRateService() {
   return GetHeartRateDevice().then(device => {
     console.log("Connecting...");
-    return device.connectGATT();
+    return device.gatt.connect();
   }).then(server => {
     console.log(server);
     console.log("Getting Services...");
@@ -65,7 +65,7 @@ function readValue() {
 
 function multipleReadValue() {
   navigator.bluetooth.requestDevice({filters: [{services: ['heart_rate']}]
-  }).then(d => d.connectGATT())
+  }).then(d => d.gatt.connect())
     .then(g => g.getPrimaryService('heart_rate'))
     .then(s => s.getCharacteristic('body_sensor_location'))
     .then(c => {
@@ -80,7 +80,7 @@ function emptyFilter() {
 }
 
 function GetHeartRateDeviceServices() {
-  return GetHeartRateDevice().then(d => d.connectGATT())
+  return GetHeartRateDevice().then(d => d.gatt.connect())
     .then(g => g.getPrimaryServices())
     .then(services => {
       for (var service of services) {
@@ -96,18 +96,18 @@ function GetHeartRateDeviceGlobal() {
     global_device = d;
   });
 }
+
 function ConnectToGlobalDeviceTwice() {
   console.log("Connecting");
-  return Promise.all([global_device.connectGATT().then(g => {
+  return Promise.all([global_device.gatt.connect().then(g => {
     global_server = g;
     console.log("Connected");
-  }), global_device.connectGATT().then(() => console.log('connected again'))]);
+  }), global_device.gatt.connect().then(() => console.log('connected again'))]);
 }
-
 
 function ConnectToGlobalDevice() {
   console.log("Connecting");
-  return global_device.connectGATT().then(g => {
+  return global_device.gatt.connect().then(g => {
     global_server = g;
     console.log("Connected");
   })
@@ -131,6 +131,23 @@ function GlobalRead() {
       return c.readValue();
     })
     .then(v => console.log(v));
+}
+
+function GlobalGetAllGattObjects() {
+  console.log('Getting all GATT objects.');
+  console.log('\n Getting Services.');
+  global_device.gatt.getPrimaryServices()
+    .then(services => {
+      services.forEach(s => {
+        console.log(s);
+        s.getCharacteristics()
+          .then(chars => {
+            chars.forEach(c => {
+              console.log(c);
+            });
+          });
+      });
+    });
 }
 
 function GlobalGetCharacteristics() {
@@ -160,7 +177,7 @@ function GlobalWrite() {
 }
 function TestGC() {
   return navigator.bluetooth.requestDevice({filters: [{services: ['heart_rate']}]})
-    .then(d => d.connectGATT())
+    .then(d => d.gatt.connect())
     .then(() => console.log("Connected"));
 };
 function DisconnectConnect() {
@@ -200,9 +217,10 @@ function CheckIfBluetoothEnabled() {
   <button onclick="GetHeartRateDevice()">Get Heart Rate Device</button>
   <button onclick="GetHeartRateDeviceServices()">Get Heart Rate Services</button>
   <button onclick="multipleReadValue()">Read x 4</button>
-  <button onclick="GetHeartRateDeviceGlobal()">Global get</button>
+  <button onmousedown="GetHeartRateDeviceGlobal()">Global get</button>
   <button onclick="ConnectToGlobalDevice()">Connect to global</button>
   <button onclick="GlobalDisconnect()">Global disconnect</button>
+  <button onclick="GlobalGetAllGattObjects()">Global Get All Gatt Objects</button>
   <button onclick="GlobalGetCharacteristics()">Global Get Characteristics</button>
   <button onclick="GlobalRead()">Global read</button>
   <button onclick="GlobalWrite()">Global write</button>
