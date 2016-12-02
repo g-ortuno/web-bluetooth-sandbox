@@ -3,13 +3,23 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
-    <title>JS Bin</title>
+    <title>Iframe test</title>
   </head>
   <body>
+    <iframe src="test.html" id="test-iframe"></iframe>
+    <button onclick="run()">Run</button>
   </body>
   <script>
-  function test_fun() {
-    navigator.bluetooth.requestDevice({acceptAllDevices: true});
+  let char;
+  function run() {
+    let iframe = document.getElementById('test-iframe');
+    iframe
+      .contentWindow.use_service()
+      .then(c => char = c)
+      .then(() => char.readValue())
+      .then(() => console.log('read value'))
+      .then(() => iframe.remove())
+      .then(() => char.readValue())
   }
   </script>
 </html>

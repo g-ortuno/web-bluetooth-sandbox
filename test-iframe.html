@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>iframe</title>
+  </head>
+  <body>
+    <button onclick="setup();">Setup test</button>
+  </body>
+  <script>
+  let service;
+  function setup() {
+    console.log('setting up');
+    navigator.bluetooth.requestDevice({filters: [{services: ['heart_rate']}]})
+      .then(d => d.gatt.connect())
+      .then(gatt => gatt.getPrimaryServices())
+      .then(services => service = services[0])
+      .then(() => console.log('all set up'))
+      .then(() => alert('all set up. press "Run" in outer frame'))
+      .catch(e => console.log('Error: ' + e.name + ':' + e.message));
+  }
+
+  function use_service() {
+    return service.getCharacteristic('body_sensor_location');
+  }
+  </script>
+</html>
