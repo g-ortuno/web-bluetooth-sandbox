@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+  <h1>In Device Read</h1>
+  <p>The following GATT Server is needed:</p>
+  <ol>
+    <li>Health Thermometer (0x1809)
+      <ol>
+        <li>Measurement Interval (0x2a21) Read</li>
+      </ol>
+    </li>
+    <li>Battery Service (0x180f)
+      <ol>
+        <li>Measurement Interval (0x2a21) Read</li>
+      </ol>
+    </li>
+  </ol>
+  <button onclick="step1()">Step 1</button>
+  <script>
+  async function step1() {
+    try {
+      let device = await navigator.bluetooth.requestDevice({
+        filters: [{services: ['health_thermometer']}], optionalServices: ['battery_service']});
+      await device.gatt.connect();
+      console.log('connected');
+      let service1 = await device.gatt.getPrimaryService('health_thermometer');
+      let char1 = await service1.getCharacteristic('measurement_interval');
+      let service2 = await device.gatt.getPrimaryService('battery_service');
+      let char2 = await service2.getCharacteristic('measurement_interval');
+      char1.readValue().then(() => alert('Success 1')).catch(e => alert('Error 1'));
+      char2.readValue().then(() => alert('Success 2')).catch(e => alert('Error 2'));
+    } catch (e) {
+      alert(e);
+    }
+  }
+  </script>
+</body>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+  <h1>Multiple Devices Read</h1>
+  <p>The following GATT Servers are needed:</p>
+  <ol>
+    <li>Device 1
+      <ol>
+        <li>Playbulb Service (0xff02)
+          <ol>
+            <li>Device Name (0xffff) Read</li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li>Device 2
+      <ol>
+        <li>Playbulb Service (0xff02)
+          <ol>
+            <li>Device Name (0xffff) Read</li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+  </ol>
+  <button onclick="step1()">Step 1</button>
+  <button onclick="step2()">Step 2</button>
+  <script>
+  let device1;
+  let device2;
+  async function step1() {
+    try {
+      device1 = await navigator.bluetooth.requestDevice({
+        filters: [{services: [0xff02]}]});
+      alert('Press Step 2');
+    } catch (e) {
+      alert(e);
+    }
+  }
+  async function step2() {
+    try {
+      device2 = await navigator.bluetooth.requestDevice({
+        filters: [{services: [0xff02]}]});
+
+      await device1.gatt.connect();
+      await device2.gatt.connect();
+
+      let service1 = await device1.gatt.getPrimaryService(0xff02);
+      let char1 = await service1.getCharacteristic(0xffff);
+      let service2 = await device2.gatt.getPrimaryService(0xff02);
+      let char2 = await service2.getCharacteristic(0xffff);
+      char1.readValue().then(() => alert('Success 1')).catch(e => alert('Error 1'));
+      char2.readValue().then(() => alert('Success 2')).catch(e => alert('Error 2'));
+    } catch (e) {
+      alert(e);
+    }
+  }
+  </script>
+</body>
